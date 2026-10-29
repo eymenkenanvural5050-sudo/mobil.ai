@@ -42,31 +42,13 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# KOYU YEŞİL TEMA VE EL YAZISI STİLİ CSS
+# KOYU YEŞİL TEMA VE TASARIM STİLLERİ (Hatasız ve Kapsayıcı)
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
-    .cursive-text { 
-        font-family: 'Caveat', cursive; 
-        font-size: 28px; 
-        color: #d4af37 !important; 
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
-    }
-    
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
-    }
-    
-    /* Sağ üst alan düzeni */
-    .header-banner {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 15px;
-        padding: 5px 10px;
-        margin-bottom: -15px;
     }
     
     /* Yan menü (Sidebar) içindeki logo */ 
@@ -124,11 +106,6 @@ st.markdown("""
         border-color: #d4af37; 
         color: #d4af37 !important; 
     }
-
-    /* Mobilde küçük ekranlar için yazı boyutu ayarı */ 
-    @media (max-width: 768px) { 
-        .cursive-text { font-size: 20px !important; } 
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -165,18 +142,19 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# SAĞ ÜST KÖŞE: YAZI VE VİDEO OYNATICI
-col_space, col_text, col_video = st.columns([5, 3, 2])
-with col_text:
-    st.markdown('<div style="text-align: right; padding-top: 10px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
+# ÜST KISIM: BAŞLIK VE SAĞ ÜSTTE VİDEO OYNATICI
+col_title, col_video = st.columns([7, 3])
+
+with col_title:
+    st.title("EymenX AI Asistan & Bilişim Lab")
+    st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
+
 with col_video:
     if os.path.exists("bayrak.mp4"):
         st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
     else:
-        st.info("💡 Klasöre 'bayrak.mp4' adında video ekleyin.")
+        st.info("💡 Klasöre 'bayrak.mp4' ekleyin.")
 
-st.title("EymenX AI Asistan & Bilişim Lab")
-st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
 
 tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz"])
