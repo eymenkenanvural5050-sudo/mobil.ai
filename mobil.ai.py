@@ -42,7 +42,7 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# KOYU YEŞİL TEMA, EL YAZISI VE TASARIM STİLLERİ (Hatalı görünen sızıntılar düzeltildi)
+# CSS KODLARININ EKRANDA YAZI OLARAK GÖZÜKMesini ENGELLEYEN GÜVENLİ ETİKET
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -155,12 +155,13 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# İŞARETLEDİĞİN YERDEKİ VİDEO OYNATICI VE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI
+# İŞARETLEDİĞİN YERDEKİ VİDEO OYNATICI
 if os.path.exists("bayrak.mp4"):
     st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
 else:
     st.info("💡 Klasöre 'bayrak.mp4' adında video ekleyin.")
 
+# SAĞ ÜST KÖŞEDE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI
 col_title, col_text = st.columns([6, 4])
 
 with col_title:
