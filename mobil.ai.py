@@ -9,7 +9,6 @@ from io import BytesIO
 import streamlit as st
 from groq import Groq
 
-# .env veya Streamlit Secrets üzerinden API anahtarı okuma
 load_dotenv()
 api_key = None
 
@@ -41,26 +40,34 @@ def save_data(filename, data):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-# Sayfa Yapılandırması
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# CSS ile Tüm Renkleri Tek Ton Yapma, Üst Barı ve Metinleri Beyaz Yapma
+# BEYAZ KISIMLARI VE SEÇİM MENÜLERİNİ KOYU YEŞİL YAPAN GÜÇLÜ CSS
 st.markdown("""
     <style>
-    /* Üst Streamlit barını koyu yeşil yap */
+    /* Üst bar ve ana arayüz */
     header[data-testid="stHeader"] {
         background-color: #142219 !important;
     }
-    /* Ana arayüz arka planı */
     .stApp {
         background-color: #142219;
-        color: #e8ede9;
+        color: #ffffff;
     }
-    /* Sol menü */
     [data-testid="stSidebar"] {
         background-color: #142219;
         border-right: 1px solid #1f3527;
     }
+    
+    /* Model seçme ve açılır menü (selectbox) arka planı ve yazısı */
+    div[data-baseweb="select"] > div {
+        background-color: #1b2e23 !important;
+        color: #ffffff !important;
+        border: 1px solid #2d4a38 !important;
+    }
+    span {
+        color: #ffffff !important;
+    }
+    
     /* Butonlar */
     .stButton>button {
         width: 100%;
@@ -77,6 +84,7 @@ st.markdown("""
         border-color: #d4af37;
         color: #d4af37;
     }
+    
     /* Sekmeler */
     .stTabs [data-baseweb="tab"] {
         font-size: 18px !important;
@@ -84,26 +92,29 @@ st.markdown("""
         padding: 10px 20px;
         color: #a3b8ad;
     }
+    
     /* Başlıklar */
     h1, h2, h3 {
         color: #d4af37 !important;
     }
-    /* Sohbet ve metin giriş kutuları (Yazı beyaz) */
-    .stTextInput input, .stTextArea textarea, div[data-baseweb="input"] input {
+    
+    /* Sohbet mesajları ve yazı alanları */
+    .stTextInput input, .stTextArea textarea, .stChatInput input {
         background-color: #1b2e23 !important;
         color: #ffffff !important;
         border: 1px solid #2d4a38 !important;
         border-radius: 10px;
     }
-    /* Sohbet alt yazma alanı metin rengi */
-    .stChatInput input {
+    
+    /* Sohbet baloncukları metin rengi */
+    div[data-testid="stChatMessage"] {
         color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 if not api_key:
-    st.error("GROQ_API_KEY bulunamadı! Lütfen Streamlit Secrets bölümüne anahtarınızı ekleyin.")
+    st.error("GROQ_API_KEY bulunamadı!")
     st.stop()
 
 client = Groq(api_key=api_key)
@@ -117,7 +128,7 @@ def get_groq_models():
     except Exception:
         return ["llama-3.3-70b-versatile", "llama3-8b-8192"]
 
-# SOL MENÜ (Kontrol Paneli ve Logo)
+# SOL MENÜ
 with st.sidebar:
     if os.path.exists("logo.png"):
         st.image("logo.png", use_container_width=True)
@@ -150,7 +161,6 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# ANA SAYFA BAŞLIĞI
 st.title("EymenX AI Asistan & Bilişim Lab")
 st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
@@ -234,7 +244,7 @@ with tab_code:
             sys.stdout = old_stdout
             st.error(f"❌ Hata: {err}")
 
-# TAB 3: QUIZ (3 SORU)
+# TAB 3: QUIZ
 with tab_quiz:
     st.subheader("🏆 Günün 3 Bilişim Yarışması")
     st.write("Soruları cevaplayın, doğru bildiğinizde konfeti patlasın!")
