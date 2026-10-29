@@ -86,15 +86,20 @@ if os.path.exists("bayrak.mp4"):
 else:
     st.info("💡 Klasöre 'bayrak.mp4' adında video ekleyin.")
 
-# SAĞ ÜSTTE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI VE BAŞLIK
-col_title, col_text = st.columns([6, 4])
+# SAĞ ÜSTTE "EFENDİLER, YARIN CUMHURİYETİ İLAN EDECEĞİZ!" VE ATATÜRK İMZASI
+col_title, col_text = st.columns([5, 5])
 
 with col_title:
     st.title("EymenX AI Asistan & Bilişim Lab")
     st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 
 with col_text:
-    st.markdown('<div style="text-align: right; padding-top: 15px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
+    st.markdown('''
+        <div style="text-align: right; padding-top: 5px;">
+            <span class="cursive-text">"Efendiler, yarın Cumhuriyet'i ilan edeceğiz!"</span><br>
+            <span style="font-family: 'Caveat', cursive; font-size: 22px; color: #d4af37 !important;">K. Atatürk</span>
+        </div>
+    ''', unsafe_allow_html=True)
 
 st.markdown("---")
 
