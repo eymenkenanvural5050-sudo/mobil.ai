@@ -137,14 +137,6 @@ with st.sidebar:
         st.markdown("### 🌰 EymenX")
     
     st.divider()
-    
-    # İŞARETLEDİĞİN YER: Yan menünün üst kısmına (AI Modu seçilmeden hemen önce) video oynatıcı
-    if os.path.exists("bayrak.mp4"):
-        st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
-    else:
-        st.info("💡 Klasöre 'bayrak.mp4' ekleyin.")
-        
-    st.divider()
     ai_persona = st.selectbox("AI Modu:", ["Genel Asistan", "Matematik Hocası", "Kodlama Rehberi", "Siber Güvenlik Uzmanı"])
     persona_prompts = {
         "Genel Asistan": "Sen EymenX adlı kişisel yapay zeka asistanısın. Türkçe, net ve samimi yanıtlar ver.",
@@ -163,13 +155,22 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# ÜST KISIM: "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI KENDİ YERİNDE (SAĞ ÜSTTE)
-col_space, col_text = st.columns([5, 5])
-with col_text:
-    st.markdown('<div style="text-align: right; padding-top: 5px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
+# ÜST KISIM: SOLDA BAŞLIK, SAĞDA İŞARETLEDİĞİN YERDE YAZI VE VİDEO OYNATICI YAN YANA
+col_title, col_text, col_video = st.columns([4, 3.5, 2.5])
 
-st.title("EymenX AI Asistan & Bilişim Lab")
-st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
+with col_title:
+    st.title("EymenX AI Asistan & Bilişim Lab")
+    st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
+
+with col_text:
+    st.markdown('<div style="text-align: right; padding-top: 15px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
+
+with col_video:
+    if os.path.exists("bayrak.mp4"):
+        st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
+    else:
+        st.info("💡 Klasöre 'bayrak.mp4' ekleyin.")
+
 st.markdown("---")
 
 tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz"])
@@ -287,4 +288,4 @@ with tab_quiz:
             st.success("🏆 Tebrikler, Tam Puan!")
             trigger_success()
         else:
-            st.error("❌ Yanlış!")
+            st.error("❌ Yanlış!")                                                                                                                                                                              
