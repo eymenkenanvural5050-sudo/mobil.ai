@@ -42,7 +42,7 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# KOYU YEŞİL TEMA, EL YAZISI VE TASARIM STİLLERİ (Doğru etiketlenmiş CSS)
+# KOYU YEŞİL TEMA, EL YAZISI VE TASARIM STİLLERİ
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -131,19 +131,19 @@ client = Groq(api_key=api_key)
 FIXED_MODEL = "openai/gpt-oss-120b"
 
 with st.sidebar:
-    if os.path.exists("logo.png"):
-        st.image("logo.png", use_container_width=True)
-    else:
-        st.markdown("### 🌰 EymenX")
-    
-    st.divider()
-    
-    # İŞARETLEDİĞİN YER: Siyah kod yazılarının olduğu o üst boşluğa video oynatıcı
+    # İŞARETLEDİĞİN YER: Sol menünün en üst kısmı (Logonun hemen üstü)
     if os.path.exists("bayrak.mp4"):
         st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
     else:
         st.info("💡 Klasöre 'bayrak.mp4' ekleyin.")
         
+    st.divider()
+
+    if os.path.exists("logo.png"):
+        st.image("logo.png", use_container_width=True)
+    else:
+        st.markdown("### 🌰 EymenX")
+    
     st.divider()
     ai_persona = st.selectbox("AI Modu:", ["Genel Asistan", "Matematik Hocası", "Kodlama Rehberi", "Siber Güvenlik Uzmanı"])
     persona_prompts = {
@@ -163,7 +163,7 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# ÜST KISIM: SAĞ ÜSTTE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI
+# SAĞ ÜST KÖŞE: "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI
 col_space, col_text = st.columns([5, 5])
 with col_text:
     st.markdown('<div style="text-align: right; padding-top: 5px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
