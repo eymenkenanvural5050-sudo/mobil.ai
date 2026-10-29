@@ -40,38 +40,41 @@ def save_data(filename, data):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-# Geniş ekran ve mobil uyumlu sayfa ayarı
-st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
+# Mobil uyumlu sayfa ayarı
+st.set_page_config(page_title="EymenX", page_icon="🌰", layout="centered")
 
-# TELEFON VE BİLGİSAYAR UYUMLU, KUSURSUZ KOYU YEŞİL CSS
+# MOBİL UYUMLU, FERAH KOYU YEŞİL CSS
 st.markdown("""
     <style>
-    /* Tüm sayfa ve bileşen arka planları */
+    /* Ana arayüz ve arka plan */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
     }
     
-    /* Mobil uyumlu butonlar ve giriş kutuları */
+    /* Mobil uyumlu giriş kutuları */
     .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div {
         background-color: #1b2e23 !important;
         color: #ffffff !important;
         border: 1px solid #2d4a38 !important;
+        border-radius: 12px !important;
     }
     
-    /* Sohbet baloncukları */
+    /* Sohbet baloncukları (Mobilde taşmayı önleyen yapı) */
     div[data-testid="stChatMessage"] {
         background-color: #1b2e23 !important;
         color: #ffffff !important;
         border: 1px solid #2d4a38 !important;
-        border-radius: 12px;
+        border-radius: 14px !important;
+        padding: 10px;
+        margin-bottom: 8px;
     }
     div[data-testid="stChatMessage"] * {
         color: #ffffff !important;
     }
     
     /* Yazı renkleri */
-    p, span, label, div, li, text {
+    p, span, label, div, li {
         color: #ffffff !important;
     }
     
@@ -79,15 +82,17 @@ st.markdown("""
         color: #d4af37 !important;
     }
     
-    /* Buton tasarımı */
+    /* Mobilde parmakla dokunması kolay, büyük butonlar */
     .stButton>button {
         width: 100%;
-        height: 3em;
+        min-height: 3.2em;
+        font-size: 16px !important;
         font-weight: 600;
-        border-radius: 10px;
+        border-radius: 12px;
         background-color: #1b2e23;
         color: #ffffff !important;
         border: 1px solid #2d4a38;
+        margin-bottom: 6px;
     }
     .stButton>button:hover {
         background-color: #2d4a38;
@@ -95,12 +100,12 @@ st.markdown("""
         color: #d4af37 !important;
     }
 
-    /* Mobilde sütunların ve sekmelerin düzgün durması için */
-    @media (max-width: 768px) {
-        .stTabs [data-baseweb="tab"] {
-            font-size: 14px !important;
-            padding: 6px 10px !important;
-        }
+    /* Sekmelerin mobilde rahat görünmesi */
+    .stTabs [data-baseweb="tab"] {
+        font-size: 16px !important;
+        font-weight: bold;
+        padding: 8px 14px;
+        color: #a3b8ad !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -111,7 +116,7 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
-# SABİT MODEL TANIMLAMASI
+# SABİT MODEL
 FIXED_MODEL = "openai/gpt-oss-120b"
 
 with st.sidebar:
@@ -130,18 +135,17 @@ with st.sidebar:
     }
 
     st.divider()
-    # Model seçimi kaldırıldı, doğrudan sabit model bilgisi gösteriliyor
-    st.info(f"🧠 **Aktif Model:**\n`{FIXED_MODEL}`")
+    st.info(f"🧠 **Model:**\n`{FIXED_MODEL}`")
 
     st.divider()
-    if st.button("🗑️ Sohbetimi Temizle"):
+    if st.button("🗑️ Sohbeti Temizle"):
         chats_data = load_data(CHATS_FILE, "dict")
         chats_data["default_user"] = []
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-st.title("EymenX AI Asistan & Bilişim Lab")
-st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
+st.title("EymenX Asistan")
+st.caption("Kişisel Yapay Zeka Platformu")
 st.markdown("---")
 
 tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz"])
@@ -159,14 +163,14 @@ with tab_chat:
             st.markdown(msg["content"])
 
     st.write("⚡ **Hızlı Sorular:**")
-    col1, col2, col3 = st.columns(3)
+    
+    # Mobilde sıkışmaması için alt alta tam boy butonlar yapıldı
     user_prompt = None
-
-    if col1.button("🐍 Python Nedir?"):
+    if st.button("🐍 Python Nedir? Nerelerde Kullanılır?"):
         user_prompt = "Python programlama dili nedir, nerelerde kullanılır?"
-    if col2.button("🤖 Algoritma Örneği"):
+    if st.button("🤖 Eğlenceli Bir Algoritma Örneği Ver"):
         user_prompt = "Bana günlük hayattan basit ve eğlenceli bir algoritma örneği ver."
-    if col3.button("🔐 Güvenlik İpucu"):
+    if st.button("🔐 Güçlü Şifre Oluşturma İpuçları"):
         user_prompt = "Güçlü şifre oluşturmak için 3 önemli ipucu ver."
 
     chat_input = st.chat_input("EymenX'e bir şeyler yazın...")
@@ -188,14 +192,14 @@ with tab_chat:
                     formatted_msgs = [sys_prompt] + [{"role": m["role"], "content": m["content"]} for m in chats_data[current_user]]
 
                     completion = client.chat.completions.create(
-                        model=FIXED_MODEL,  # Sabit model kullanılıyor
+                        model=FIXED_MODEL,
                         messages=formatted_msgs,
                         stream=False
                     )
 
                     elapsed = round(time.time() - start_time, 2)
                     reply = completion.choices[0].message.content
-                    full_reply = f"{reply}\n\n---\n⏱️ *Süre: {elapsed}s | {FIXED_MODEL}*"
+                    full_reply = f"{reply}\n\n---\n⏱️ *{elapsed}s | {FIXED_MODEL}*"
                     
                     st.markdown(full_reply)
                     
@@ -207,16 +211,16 @@ with tab_chat:
 
 # TAB 2: PYTHON PLAYGROUND
 with tab_code:
-    st.subheader("💻 Canlı Python Kod Derleyicisi")
+    st.subheader("💻 Canlı Python Derleyicisi")
     default_code = 'print("Merhaba EymenX!")\nfor i in range(1, 4):\n    print(f"Bilişim Adım: {i}")'
-    user_code = st.text_area("Python Kodunuz:", value=default_code, height=180)
+    user_code = st.text_area("Python Kodunuz:", value=default_code, height=150)
     if st.button("▶️ Kodu Çalıştır"):
         old_stdout = sys.stdout
         redirected_output = sys.stdout = io.StringIO()
         try:
             exec(user_code)
             sys.stdout = old_stdout
-            st.success("✅ Kod Başarıyla Çalıştı!")
+            st.success("✅ Başarılı!")
             st.code(redirected_output.getvalue(), language="python")
         except Exception as err:
             sys.stdout = old_stdout
@@ -224,39 +228,38 @@ with tab_code:
 
 # TAB 3: QUIZ
 with tab_quiz:
-    st.subheader("🏆 Günün 3 Bilişim Yarışması")
-    st.write("Soruları cevaplayın, doğru bildiğinizde konfeti patlasın!")
+    st.subheader("🏆 Bilişim Yarışması")
     
     def trigger_success():
         st.balloons()
 
-    st.markdown("### 1️⃣ Soru: Python'da ekrana yazı yazdırma komutu hangisidir?")
-    q1 = st.radio("Seçiminizi yapın (Soru 1):", ["input()", "print()", "write()", "echo()"], key="q1_k")
+    st.markdown("### 1️⃣ Python ekrana yazdırma komutu?")
+    q1 = st.radio("Seçenekler:", ["input()", "print()", "write()", "echo()"], key="q1_k")
     if st.button("1. Soruyu Kontrol Et"):
         if q1 == "print()":
-            st.success("🎉 Harika! 1. Soru Doğru!")
+            st.success("🎉 Doğru!")
             trigger_success()
         else:
-            st.error("❌ Yanlış! Tekrar deneyin.")
+            st.error("❌ Yanlış!")
 
     st.divider()
 
-    st.markdown("### 2️⃣ Soru: Bilgisayarda mantıksal işlem yapan ve 'beyin' olarak bilinen donanım nedir?")
-    q2 = st.radio("Seçiminizi yapın (Soru 2):", ["RAM Bellek", "Sabit Disk (HDD)", "İşlemci (CPU)", "Ekran Kartı"], key="q2_k")
+    st.markdown("### 2️⃣ 'Beyin' olarak bilinen donanım?")
+    q2 = st.radio("Seçenekler:", ["RAM", "HDD", "İşlemci (CPU)", "Ekran Kartı"], key="q2_k")
     if st.button("2. Soruyu Kontrol Et"):
         if q2 == "İşlemci (CPU)":
-            st.success("🎉 Tebrikler! 2. Soru Doğru!")
+            st.success("🎉 Doğru!")
             trigger_success()
         else:
-            st.error("❌ Yanlış! İpucu: Merkezi işlem birimidir.")
+            st.error("❌ Yanlış!")
 
     st.divider()
 
-    st.markdown("### 3️⃣ Soru: Aşağıdakilerden hangisi güçlü ve güvenli bir şifrede mutlaka bulunmalıdır?")
-    q3 = st.radio("Seçiminizi yapın (Soru 3):", ["Sadece doğum tarihiniz", "Büyük harf, küçük harf, rakam ve özel karakter", "Adınız ve soyadınız", "123456 sayısı"], key="q3_k")
+    st.markdown("### 3️⃣ Güvenli şifrede ne olmalıdır?")
+    q3 = st.radio("Seçenekler:", ["Sadece doğum tarihi", "Büyük/küçük harf, rakam, özel karakter", "Ad ve soyad", "123456"], key="q3_k")
     if st.button("3. Soruyu Kontrol Et"):
-        if q3 == "Büyük harf, küçük harf, rakam ve özel karakter":
-            st.success("🏆 Muhteşem! 3 Soru da Tamam! Tam Puan Kazandın!")
+        if q3 == "Büyük/küçük harf, rakam, özel karakter":
+            st.success("🏆 Tebrikler, Tam Puan!")
             trigger_success()
         else:
-            st.error("❌ Yanlış! Güvenlik kurallarını gözden geçir.")
+            st.error("❌ Yanlış!")
