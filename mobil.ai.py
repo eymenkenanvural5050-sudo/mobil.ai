@@ -9,16 +9,6 @@ from io import BytesIO
 import streamlit as st
 from groq import Groq
 
-# reportlab kütüphanesinin güvenli içe aktarımı (PDF için)
-try:
-    from reportlab.lib.pagesizes import letter
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib import colors
-    REPORTLAB_AVAILABLE = True
-except ImportError:
-    REPORTLAB_AVAILABLE = False
-
 # .env veya Streamlit Secrets üzerinden API anahtarı okuma
 load_dotenv()
 api_key = None
@@ -32,15 +22,7 @@ except Exception:
 if not api_key:
     api_key = os.getenv("GROQ_API_KEY")
 
-# Dosya yolları
 CHATS_FILE = "user_chats.json"
-
-# Yasaklı Kelime Filtresi
-BAD_WORDS = ["küfür1", "argo1", "yasak1"]
-
-def contains_bad_words(text):
-    text_lower = text.lower()
-    return any(word in text_lower for word in BAD_WORDS)
 
 def load_data(filename, default_type="list"):
     if os.path.exists(filename):
@@ -62,55 +44,57 @@ def save_data(filename, data):
 # Sayfa Yapılandırması
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# EymenX Koyu Yeşil & Kestane Tonları Uyumlu Özel Tasarım (CSS)
+# Modern, Şık ve Hatasız Koyu Yeşil Tasarım (CSS)
 st.markdown("""
     <style>
     .stApp {
-        background-color: #1b2e23;
+        background-color: #142219;
         color: #e8ede9;
     }
     [data-testid="stSidebar"] {
-        background-color: #142219;
+        background-color: #0d1711;
+        border-right: 1px solid #1f3527;
     }
     .stButton>button {
         width: 100%;
-        height: 3.2em;
-        font-size: 18px !important;
-        font-weight: bold;
-        border-radius: 12px;
-        background-color: #2b4737;
+        height: 3em;
+        font-size: 16px !important;
+        font-weight: 600;
+        border-radius: 10px;
+        background-color: #1b2e23;
         color: #ffffff;
-        border: 1px solid #3c604b;
+        border: 1px solid #2d4a38;
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        background-color: #3c604b;
+        background-color: #2d4a38;
         border-color: #d4af37;
         color: #d4af37;
     }
     .stTabs [data-baseweb="tab"] {
-        font-size: 20px !important;
+        font-size: 18px !important;
         font-weight: bold;
         padding: 10px 20px;
-        color: #b5c4bc;
+        color: #a3b8ad;
     }
     h1, h2, h3 {
         color: #d4af37 !important;
     }
     .stTextInput input, .stTextArea textarea {
-        background-color: #243b2f;
+        background-color: #1b2e23;
         color: #ffffff;
-        border: 1px solid #324e3f;
+        border: 1px solid #2d4a38;
+        border-radius: 10px;
     }
     </style>
 """, unsafe_allow_html=True)
 
 if not api_key:
-    st.error("GROQ_API_KEY bulunamadı! Lütfen Streamlit Secrets veya .env dosyasına anahtarınızı ekleyin.")
+    st.error("GROQ_API_KEY bulunamadı! Lütfen Streamlit Secrets bölümüne anahtarınızı ekleyin.")
     st.stop()
 
 client = Groq(api_key=api_key)
 
-# Dinamik Model Çekme
 @st.cache_data(ttl=3600)
 def get_groq_models():
     try:
@@ -122,15 +106,11 @@ def get_groq_models():
 
 # SOL MENÜ (Kontrol Paneli)
 with st.sidebar:
-    # Logo ve Başlık Yan Yana
-    scol1, scol2 = st.columns([1, 3])
-    with scol1:
-        if os.path.exists("logo.png"):
-            st.image("logo.png", width=50)
-        else:
-            st.write("🌰")
-    with scol2:
-        st.markdown("### EymenX")
+    if os.path.exists("logo.png"):
+        st.image("logo.png", use_container_width=True)
+    else:
+        st.markdown("### 🌰 EymenX Logo Bulunamadı")
+        st.caption("Lütfen logo.png dosyasını yükleyin.")
     
     st.divider()
     ai_persona = st.selectbox("AI Modu:", ["Genel Asistan", "Matematik Hocası", "Kodlama Rehberi", "Siber Güvenlik Uzmanı"])
@@ -157,17 +137,9 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# ANA SAYFA BAŞLIĞI VE LOGO
-mcol1, mcol2 = st.columns([1, 8])
-with mcol1:
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=90)
-    else:
-        st.write("🌰")
-with mcol2:
-    st.title("EymenX AI Asistan & Bilişim Lab")
-    st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
-
+# ANA SAYFA BAŞLIĞI
+st.title("EymenX AI Asistan & Bilişim Lab")
+st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
 
 tab_chat, tab_code, tab_quiz = st.tabs(["💬 Yapay Zeka Sohbet", "💻 Python Kodu Çalıştır", "🏆 Günün Bilişim Soruları"])
@@ -200,40 +172,37 @@ with tab_chat:
         user_prompt = chat_input
 
     if user_prompt:
-        if contains_bad_words(user_prompt):
-            st.error("⚠️ Okul güvenlik kuralları gereği mesaj engellendi!")
-        else:
-            chats_data[current_user].append({"role": "user", "content": user_prompt})
-            save_data(CHATS_FILE, chats_data)
-            
-            with st.chat_message("user"):
-                st.write(user_prompt)
+        chats_data[current_user].append({"role": "user", "content": user_prompt})
+        save_data(CHATS_FILE, chats_data)
+        
+        with st.chat_message("user"):
+            st.write(user_prompt)
 
-            with st.chat_message("assistant"):
-                with st.spinner("EymenX düşünüyor..."):
-                    try:
-                        start_time = time.time()
-                        sys_prompt = {"role": "system", "content": persona_prompts[ai_persona]}
-                        formatted_msgs = [sys_prompt] + [{"role": m["role"], "content": m["content"]} for m in chats_data[current_user]]
+        with st.chat_message("assistant"):
+            with st.spinner("EymenX düşünüyor..."):
+                try:
+                    start_time = time.time()
+                    sys_prompt = {"role": "system", "content": persona_prompts[ai_persona]}
+                    formatted_msgs = [sys_prompt] + [{"role": m["role"], "content": m["content"]} for m in chats_data[current_user]]
 
-                        completion = client.chat.completions.create(
-                            model=selected_model,
-                            messages=formatted_msgs,
-                            stream=False
-                        )
+                    completion = client.chat.completions.create(
+                        model=selected_model,
+                        messages=formatted_msgs,
+                        stream=False
+                    )
 
-                        elapsed = round(time.time() - start_time, 2)
-                        reply = completion.choices[0].message.content
-                        full_reply = f"{reply}\n\n---\n⏱️ *Yanıt Süresi: {elapsed} saniye | Model: {selected_model}*"
-                        
-                        st.write(full_reply)
-                        
-                        chats_data[current_user].append({"role": "assistant", "content": full_reply})
-                        save_data(CHATS_FILE, chats_data)
-                        st.rerun()
+                    elapsed = round(time.time() - start_time, 2)
+                    reply = completion.choices[0].message.content
+                    full_reply = f"{reply}\n\n---\n⏱️ *Yanıt Süresi: {elapsed} saniye | Model: {selected_model}*"
+                    
+                    st.write(full_reply)
+                    
+                    chats_data[current_user].append({"role": "assistant", "content": full_reply})
+                    save_data(CHATS_FILE, chats_data)
+                    st.rerun()
 
-                    except Exception as e:
-                        st.error(f"API Hatası: {e}")
+                except Exception as e:
+                    st.error(f"API Hatası: {e}")
 
 # TAB 2: PYTHON PLAYGROUND
 with tab_code:
