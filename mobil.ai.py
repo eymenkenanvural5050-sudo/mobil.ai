@@ -42,7 +42,7 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# KOYU YEŞİL TEMA, EL YAZISI VE TASARIM STİLLERİ
+# KOYU YEŞİL TEMA, EL YAZISI VE TASARIM STİLLERİ (Doğru etiketlenmiş CSS)
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -137,6 +137,14 @@ with st.sidebar:
         st.markdown("### 🌰 EymenX")
     
     st.divider()
+    
+    # İŞARETLEDİĞİN YER: Siyah kod yazılarının olduğu o üst boşluğa video oynatıcı
+    if os.path.exists("bayrak.mp4"):
+        st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
+    else:
+        st.info("💡 Klasöre 'bayrak.mp4' ekleyin.")
+        
+    st.divider()
     ai_persona = st.selectbox("AI Modu:", ["Genel Asistan", "Matematik Hocası", "Kodlama Rehberi", "Siber Güvenlik Uzmanı"])
     persona_prompts = {
         "Genel Asistan": "Sen EymenX adlı kişisel yapay zeka asistanısın. Türkçe, net ve samimi yanıtlar ver.",
@@ -155,22 +163,13 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# ÜST KISIM: SOLDA BAŞLIK, SAĞDA İŞARETLEDİĞİN YERDE YAZI VE VİDEO OYNATICI YAN YANA
-col_title, col_text, col_video = st.columns([4, 3.5, 2.5])
-
-with col_title:
-    st.title("EymenX AI Asistan & Bilişim Lab")
-    st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
-
+# ÜST KISIM: SAĞ ÜSTTE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI
+col_space, col_text = st.columns([5, 5])
 with col_text:
-    st.markdown('<div style="text-align: right; padding-top: 15px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align: right; padding-top: 5px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
 
-with col_video:
-    if os.path.exists("bayrak.mp4"):
-        st.video("bayrak.mp4", format="video/mp4", autoplay=True, loop=True, muted=True)
-    else:
-        st.info("💡 Klasöre 'bayrak.mp4' ekleyin.")
-
+st.title("EymenX AI Asistan & Bilişim Lab")
+st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
 
 tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz"])
@@ -288,4 +287,4 @@ with tab_quiz:
             st.success("🏆 Tebrikler, Tam Puan!")
             trigger_success()
         else:
-            st.error("❌ Yanlış!")                                                                                                                                                                              
+            st.error("❌ Yanlış!")
