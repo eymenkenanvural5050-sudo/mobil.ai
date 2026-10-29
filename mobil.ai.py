@@ -40,16 +40,85 @@ def save_data(filename, data):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-# Bilgisayar için geniş ekran (Wide) seçildi
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# HER İKİ PLATFORMA DA UYUMLU, GELİŞMİŞ CSS
+# TÜRK BAYRAĞI, EL YAZISI STİLİ VE KOYU YEŞİL TEMA CSS
 st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
+    }
+    
+    /* Sağ üst bayrak ve el yazısı yazı alanı tasarımı */
+    .header-banner {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        padding: 5px 10px;
+        margin-bottom: -15px;
+    }
+    
+    .cursive-text {
+        font-family: 'Caveat', cursive;
+        font-size: 28px;
+        color: #d4af37 !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* Dalgalanan CSS Türk Bayrağı */
+    .turkish-flag {
+        position: relative;
+        width: 55px;
+        height: 36px;
+        background-color: #e30a17;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        display: inline-block;
+        overflow: hidden;
+        animation: wave 3s ease-in-out infinite alternate;
+    }
+    
+    .turkish-flag .moon {
+        position: absolute;
+        top: 6px;
+        left: 10px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        box-shadow: 4px 0 0 0 #ffffff;
+    }
+    
+    .turkish-flag .star {
+        position: absolute;
+        top: 11px;
+        left: 31px;
+        display: block;
+        width: 0;
+        height: 0;
+        border-right: 4px solid transparent;
+        border-bottom: 3px solid #ffffff;
+        border-left: 4px solid transparent;
+        transform: rotate(35deg);
+    }
+    .turkish-flag .star:before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -4px;
+        border-right: 4px solid transparent;
+        border-top: 3px solid #ffffff;
+        border-left: 4px solid transparent;
+        transform: rotate(-70deg);
+    }
+
+    @keyframes wave {
+        0% { transform: skewY(0deg) scale(1); }
+        50% { transform: skewY(-2deg) scale(1.02); }
+        100% { transform: skewY(1deg) scale(1); }
     }
     
     /* Giriş kutuları */
@@ -99,11 +168,10 @@ st.markdown("""
         color: #d4af37 !important;
     }
 
-    /* Mobil cihazlar için özel düzenlemeler (768 piksel altı) */
+    /* Mobilde küçük ekranlar için yazı boyutu ayarı */
     @media (max-width: 768px) {
-        .stTabs [data-baseweb="tab"] {
-            font-size: 14px !important;
-            padding: 6px 10px !important;
+        .cursive-text {
+            font-size: 22px !important;
         }
     }
     </style>
@@ -143,6 +211,17 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
+# SAĞ ÜST KÖŞE: DALGALANAN BAYRAK VE EL YAZISI YAZI
+st.markdown("""
+    <div class="header-banner">
+        <span class="cursive-text">Cumhuriyet hürriyet demektir</span>
+        <div class="turkish-flag">
+            <div class="moon"></div>
+            <div class="star"></div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
 st.title("EymenX AI Asistan & Bilişim Lab")
 st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
@@ -163,7 +242,6 @@ with tab_chat:
 
     st.write("⚡ **Hızlı Sorular:**")
     
-    # Bilgisayarda yan yana, telefonda otomatik alt alta duran akıllı kolonlar
     col1, col2, col3 = st.columns(3)
     user_prompt = None
 
