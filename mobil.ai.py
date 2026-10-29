@@ -40,19 +40,19 @@ def save_data(filename, data):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-# Mobil uyumlu sayfa ayarı
-st.set_page_config(page_title="EymenX", page_icon="🌰", layout="centered")
+# Bilgisayar için geniş ekran (Wide) seçildi
+st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# MOBİL UYUMLU, FERAH KOYU YEŞİL CSS
+# HER İKİ PLATFORMA DA UYUMLU, GELİŞMİŞ CSS
 st.markdown("""
     <style>
-    /* Ana arayüz ve arka plan */
+    /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
     }
     
-    /* Mobil uyumlu giriş kutuları */
+    /* Giriş kutuları */
     .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div {
         background-color: #1b2e23 !important;
         color: #ffffff !important;
@@ -60,20 +60,20 @@ st.markdown("""
         border-radius: 12px !important;
     }
     
-    /* Sohbet baloncukları (Mobilde taşmayı önleyen yapı) */
+    /* Sohbet baloncukları */
     div[data-testid="stChatMessage"] {
         background-color: #1b2e23 !important;
         color: #ffffff !important;
         border: 1px solid #2d4a38 !important;
         border-radius: 14px !important;
-        padding: 10px;
-        margin-bottom: 8px;
+        padding: 12px;
+        margin-bottom: 10px;
     }
     div[data-testid="stChatMessage"] * {
         color: #ffffff !important;
     }
     
-    /* Yazı renkleri */
+    /* Metin renkleri */
     p, span, label, div, li {
         color: #ffffff !important;
     }
@@ -82,17 +82,16 @@ st.markdown("""
         color: #d4af37 !important;
     }
     
-    /* Mobilde parmakla dokunması kolay, büyük butonlar */
+    /* Buton tasarımı */
     .stButton>button {
         width: 100%;
-        min-height: 3.2em;
-        font-size: 16px !important;
+        min-height: 3em;
+        font-size: 15px !important;
         font-weight: 600;
         border-radius: 12px;
         background-color: #1b2e23;
         color: #ffffff !important;
         border: 1px solid #2d4a38;
-        margin-bottom: 6px;
     }
     .stButton>button:hover {
         background-color: #2d4a38;
@@ -100,12 +99,12 @@ st.markdown("""
         color: #d4af37 !important;
     }
 
-    /* Sekmelerin mobilde rahat görünmesi */
-    .stTabs [data-baseweb="tab"] {
-        font-size: 16px !important;
-        font-weight: bold;
-        padding: 8px 14px;
-        color: #a3b8ad !important;
+    /* Mobil cihazlar için özel düzenlemeler (768 piksel altı) */
+    @media (max-width: 768px) {
+        .stTabs [data-baseweb="tab"] {
+            font-size: 14px !important;
+            padding: 6px 10px !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -144,8 +143,8 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-st.title("EymenX Asistan")
-st.caption("Kişisel Yapay Zeka Platformu")
+st.title("EymenX AI Asistan & Bilişim Lab")
+st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
 
 tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz"])
@@ -164,14 +163,19 @@ with tab_chat:
 
     st.write("⚡ **Hızlı Sorular:**")
     
-    # Mobilde sıkışmaması için alt alta tam boy butonlar yapıldı
+    # Bilgisayarda yan yana, telefonda otomatik alt alta duran akıllı kolonlar
+    col1, col2, col3 = st.columns(3)
     user_prompt = None
-    if st.button("🐍 Python Nedir? Nerelerde Kullanılır?"):
-        user_prompt = "Python programlama dili nedir, nerelerde kullanılır?"
-    if st.button("🤖 Eğlenceli Bir Algoritma Örneği Ver"):
-        user_prompt = "Bana günlük hayattan basit ve eğlenceli bir algoritma örneği ver."
-    if st.button("🔐 Güçlü Şifre Oluşturma İpuçları"):
-        user_prompt = "Güçlü şifre oluşturmak için 3 önemli ipucu ver."
+
+    with col1:
+        if st.button("🐍 Python Nedir?"):
+            user_prompt = "Python programlama dili nedir, nerelerde kullanılır?"
+    with col2:
+        if st.button("🤖 Algoritma Örneği"):
+            user_prompt = "Bana günlük hayattan basit ve eğlenceli bir algoritma örneği ver."
+    with col3:
+        if st.button("🔐 Güvenlik İpucu"):
+            user_prompt = "Güçlü şifre oluşturmak için 3 önemli ipucu ver."
 
     chat_input = st.chat_input("EymenX'e bir şeyler yazın...")
     if chat_input:
@@ -211,9 +215,9 @@ with tab_chat:
 
 # TAB 2: PYTHON PLAYGROUND
 with tab_code:
-    st.subheader("💻 Canlı Python Derleyicisi")
+    st.subheader("💻 Canlı Python Kod Derleyicisi")
     default_code = 'print("Merhaba EymenX!")\nfor i in range(1, 4):\n    print(f"Bilişim Adım: {i}")'
-    user_code = st.text_area("Python Kodunuz:", value=default_code, height=150)
+    user_code = st.text_area("Python Kodunuz:", value=default_code, height=180)
     if st.button("▶️ Kodu Çalıştır"):
         old_stdout = sys.stdout
         redirected_output = sys.stdout = io.StringIO()
@@ -228,7 +232,7 @@ with tab_code:
 
 # TAB 3: QUIZ
 with tab_quiz:
-    st.subheader("🏆 Bilişim Yarışması")
+    st.subheader("🏆 Günün 3 Bilişim Yarışması")
     
     def trigger_success():
         st.balloons()
