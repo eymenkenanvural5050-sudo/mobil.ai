@@ -40,16 +40,24 @@ def save_data(filename, data):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-# Bilgisayar için geniş ekran (Wide) seçildi
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# HER İKİ PLATFORMA DA UYUMLU, GELİŞMİŞ CSS
+# LOGO VE MOBİL UYUMLU CSS DÜZENLEMELERİ
 st.markdown("""
     <style>
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
+    }
+    
+    /* Yan menü (Sidebar) içindeki logo ve bileşenlerin mobilde düzgün durması için */
+    [data-testid="stSidebar"] img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 140px !important;
+        border-radius: 12px;
     }
     
     /* Giriş kutuları */
@@ -99,7 +107,7 @@ st.markdown("""
         color: #d4af37 !important;
     }
 
-    /* Mobil cihazlar için özel düzenlemeler (768 piksel altı) */
+    /* Mobilde sütunların ve sekmelerin uyumu */
     @media (max-width: 768px) {
         .stTabs [data-baseweb="tab"] {
             font-size: 14px !important;
@@ -115,7 +123,6 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
-# SABİT MODEL
 FIXED_MODEL = "openai/gpt-oss-120b"
 
 with st.sidebar:
@@ -163,7 +170,6 @@ with tab_chat:
 
     st.write("⚡ **Hızlı Sorular:**")
     
-    # Bilgisayarda yan yana, telefonda otomatik alt alta duran akıllı kolonlar
     col1, col2, col3 = st.columns(3)
     user_prompt = None
 
@@ -248,7 +254,7 @@ with tab_quiz:
 
     st.divider()
 
-    st.markdown("### 2️⃣ 'Beyin' olarak bilinen donanım?")
+    st.markdown("### 2️⃣ 'Beyin' olarak bilinen donanım nedir?")
     q2 = st.radio("Seçenekler:", ["RAM", "HDD", "İşlemci (CPU)", "Ekran Kartı"], key="q2_k")
     if st.button("2. Soruyu Kontrol Et"):
         if q2 == "İşlemci (CPU)":
