@@ -42,7 +42,7 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# KOYU YEŞİL TEMA VE EL YAZISI STİLİ CSS
+# KOYU YEŞİL TEMA, EL YAZISI VE GERÇEKÇİ DALGALANAN CSS TÜRK BAYRAĞI
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -52,20 +52,90 @@ st.markdown("""
         color: #d4af37 !important; 
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
     }
+    
+    /* Gelişmiş Dalgalanan Türk Bayrağı Efekti */
+    .turkish-flag-container {
+        display: inline-block;
+        perspective: 500px;
+    }
+    
+    .turkish-flag {
+        position: relative;
+        width: 65px;
+        height: 42px;
+        background-color: #e30a17;
+        border-radius: 3px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        display: inline-block;
+        overflow: hidden;
+        animation: waveEffect 3s ease-in-out infinite alternate;
+        transform-origin: left center;
+    }
+
+    .turkish-flag .moon {
+        position: absolute;
+        top: 8px;
+        left: 12px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        box-shadow: 5px 0 0 0 #ffffff;
+    }
+
+    .turkish-flag .star {
+        position: absolute;
+        top: 13px;
+        left: 36px;
+        display: block;
+        width: 0;
+        height: 0;
+        border-right: 5px solid transparent;
+        border-bottom: 3.5px solid #ffffff;
+        border-left: 5px solid transparent;
+        transform: rotate(35deg);
+    }
+    .turkish-flag .star:before {
+        content: "";
+        position: absolute;
+        top: -2.5px;
+        left: -5px;
+        border-right: 5px solid transparent;
+        border-top: 3.5px solid #ffffff;
+        border-left: 5px solid transparent;
+        transform: rotate(-70deg);
+    }
+
+    @keyframes waveEffect {
+        0% { 
+            transform: rotateY(0deg) skewY(0deg) scale(1); 
+            filter: brightness(1);
+        }
+        50% { 
+            transform: rotateY(-15deg) skewY(-3deg) scale(1.03); 
+            filter: brightness(1.1);
+        }
+        100% { 
+            transform: rotateY(10deg) skewY(2deg) scale(1); 
+            filter: brightness(0.95);
+        }
+    }
+
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
     }
+    
     /* Sağ üst bayrak ve el yazısı alanı */
     .header-banner {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        gap: 12px;
+        gap: 15px;
         padding: 5px 10px;
         margin-bottom: -15px;
     }
+    
     /* Yan menü (Sidebar) içindeki logo */ 
     [data-testid="stSidebar"] img { 
         display: block; 
@@ -74,6 +144,7 @@ st.markdown("""
         max-width: 140px !important; 
         border-radius: 12px; 
     }
+    
     /* Giriş kutuları */ 
     .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div { 
         background-color: #1b2e23 !important; 
@@ -81,6 +152,7 @@ st.markdown("""
         border: 1px solid #2d4a38 !important; 
         border-radius: 12px !important; 
     }
+    
     /* Sohbet baloncukları */ 
     div[data-testid="stChatMessage"] { 
         background-color: #1b2e23 !important; 
@@ -93,13 +165,16 @@ st.markdown("""
     div[data-testid="stChatMessage"] * { 
         color: #ffffff !important; 
     }
+    
     /* Metin renkleri */ 
     p, span, label, div, li { 
         color: #ffffff !important; 
     }
+    
     h1, h2, h3 { 
         color: #d4af37 !important; 
     }
+    
     /* Buton tasarımı */ 
     .stButton>button { 
         width: 100%; 
@@ -116,9 +191,11 @@ st.markdown("""
         border-color: #d4af37; 
         color: #d4af37 !important; 
     }
+
     /* Mobilde küçük ekranlar için yazı boyutu ayarı */ 
     @media (max-width: 768px) { 
         .cursive-text { font-size: 20px !important; } 
+        .turkish-flag { width: 50px; height: 32px; } 
     }
     </style>
 """, unsafe_allow_html=True)
@@ -156,17 +233,18 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# SAĞ ÜST KÖŞE: GERÇEKÇİ DALGALANAN BAYRAK GÖRSELİ VE EL YAZISI
-col_space, col_text, col_flag = st.columns([6, 3, 1.2])
-with col_text:
-    st.markdown('<div style="text-align: right; padding-top: 5px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
-with col_flag:
-    if os.path.exists("bayrak.gif"):
-        st.image("bayrak.gif", width=85)
-    elif os.path.exists("bayrak.png"):
-        st.image("bayrak.png", width=85)
-    else:
-        st.markdown("🇹🇷")
+# SAĞ ÜST KÖŞE: GERÇEKÇİ DALGALANAN BAYRAK VE EL YAZISI
+st.markdown("""
+    <div class="header-banner">
+        <span class="cursive-text">Cumhuriyet hürriyet demektir</span>
+        <div class="turkish-flag-container">
+            <div class="turkish-flag">
+                <div class="moon"></div>
+                <div class="star"></div>
+            </div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 st.title("EymenX AI Asistan & Bilişim Lab")
 st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
