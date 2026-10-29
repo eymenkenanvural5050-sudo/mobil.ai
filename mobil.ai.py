@@ -40,75 +40,67 @@ def save_data(filename, data):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
+# Geniş ekran ve mobil uyumlu sayfa ayarı
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# BEYAZ KISIMLARI VE SEÇİM MENÜLERİNİ KOYU YEŞİL YAPAN GÜÇLÜ CSS
+# TELEFON VE BİLGİSAYAR UYUMLU, KUSURSUZ KOYU YEŞİL CSS
 st.markdown("""
     <style>
-    /* Üst bar ve ana arayüz */
-    header[data-testid="stHeader"] {
+    /* Tüm sayfa ve bileşen arka planları */
+    .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
-    }
-    .stApp {
-        background-color: #142219;
-        color: #ffffff;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #142219;
-        border-right: 1px solid #1f3527;
+        color: #ffffff !important;
     }
     
-    /* Model seçme ve açılır menü (selectbox) arka planı ve yazısı */
-    div[data-baseweb="select"] > div {
+    /* Mobil uyumlu butonlar ve giriş kutuları */
+    .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div {
         background-color: #1b2e23 !important;
         color: #ffffff !important;
         border: 1px solid #2d4a38 !important;
     }
-    span {
+    
+    /* Sohbet baloncukları */
+    div[data-testid="stChatMessage"] {
+        background-color: #1b2e23 !important;
+        color: #ffffff !important;
+        border: 1px solid #2d4a38 !important;
+        border-radius: 12px;
+    }
+    div[data-testid="stChatMessage"] * {
         color: #ffffff !important;
     }
     
-    /* Butonlar */
+    /* Yazı renkleri */
+    p, span, label, div, li, text {
+        color: #ffffff !important;
+    }
+    
+    h1, h2, h3 {
+        color: #d4af37 !important;
+    }
+    
+    /* Buton tasarımı */
     .stButton>button {
         width: 100%;
         height: 3em;
-        font-size: 16px !important;
         font-weight: 600;
         border-radius: 10px;
         background-color: #1b2e23;
-        color: #ffffff;
+        color: #ffffff !important;
         border: 1px solid #2d4a38;
     }
     .stButton>button:hover {
         background-color: #2d4a38;
         border-color: #d4af37;
-        color: #d4af37;
-    }
-    
-    /* Sekmeler */
-    .stTabs [data-baseweb="tab"] {
-        font-size: 18px !important;
-        font-weight: bold;
-        padding: 10px 20px;
-        color: #a3b8ad;
-    }
-    
-    /* Başlıklar */
-    h1, h2, h3 {
         color: #d4af37 !important;
     }
-    
-    /* Sohbet mesajları ve yazı alanları */
-    .stTextInput input, .stTextArea textarea, .stChatInput input {
-        background-color: #1b2e23 !important;
-        color: #ffffff !important;
-        border: 1px solid #2d4a38 !important;
-        border-radius: 10px;
-    }
-    
-    /* Sohbet baloncukları metin rengi */
-    div[data-testid="stChatMessage"] {
-        color: #ffffff !important;
+
+    /* Mobilde sütunların ve sekmelerin düzgün durması için */
+    @media (max-width: 768px) {
+        .stTabs [data-baseweb="tab"] {
+            font-size: 14px !important;
+            padding: 6px 10px !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -119,16 +111,9 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
-@st.cache_data(ttl=3600)
-def get_groq_models():
-    try:
-        models = client.models.list()
-        model_ids = [m.id for m in models.data if "whisper" not in m.id and "safetensors" not in m.id]
-        return sorted(model_ids)
-    except Exception:
-        return ["llama-3.3-70b-versatile", "llama3-8b-8192"]
+# SABİT MODEL TANIMLAMASI
+FIXED_MODEL = "openai/gpt-oss-120b"
 
-# SOL MENÜ
 with st.sidebar:
     if os.path.exists("logo.png"):
         st.image("logo.png", use_container_width=True)
@@ -145,14 +130,8 @@ with st.sidebar:
     }
 
     st.divider()
-    available_models = get_groq_models()
-    default_index = 0
-    for idx, model_name in enumerate(available_models):
-        if "70b" in model_name or "versatile" in model_name:
-            default_index = idx
-            break
-            
-    selected_model = st.selectbox("Model Seçin:", available_models, index=default_index)
+    # Model seçimi kaldırıldı, doğrudan sabit model bilgisi gösteriliyor
+    st.info(f"🧠 **Aktif Model:**\n`{FIXED_MODEL}`")
 
     st.divider()
     if st.button("🗑️ Sohbetimi Temizle"):
@@ -165,7 +144,7 @@ st.title("EymenX AI Asistan & Bilişim Lab")
 st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 st.markdown("---")
 
-tab_chat, tab_code, tab_quiz = st.tabs(["💬 Yapay Zeka Sohbet", "💻 Python Kodu Çalıştır", "🏆 Günün Bilişim Soruları"])
+tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz"])
 
 current_user = "default_user"
 
@@ -177,7 +156,7 @@ with tab_chat:
 
     for msg in chats_data[current_user]:
         with st.chat_message(msg["role"]):
-            st.write(msg["content"])
+            st.markdown(msg["content"])
 
     st.write("⚡ **Hızlı Sorular:**")
     col1, col2, col3 = st.columns(3)
@@ -187,7 +166,7 @@ with tab_chat:
         user_prompt = "Python programlama dili nedir, nerelerde kullanılır?"
     if col2.button("🤖 Algoritma Örneği"):
         user_prompt = "Bana günlük hayattan basit ve eğlenceli bir algoritma örneği ver."
-    if col3.button("🔐 Siber Güvenlik İpucu"):
+    if col3.button("🔐 Güvenlik İpucu"):
         user_prompt = "Güçlü şifre oluşturmak için 3 önemli ipucu ver."
 
     chat_input = st.chat_input("EymenX'e bir şeyler yazın...")
@@ -199,7 +178,7 @@ with tab_chat:
         save_data(CHATS_FILE, chats_data)
         
         with st.chat_message("user"):
-            st.write(user_prompt)
+            st.markdown(user_prompt)
 
         with st.chat_message("assistant"):
             with st.spinner("EymenX düşünüyor..."):
@@ -209,20 +188,19 @@ with tab_chat:
                     formatted_msgs = [sys_prompt] + [{"role": m["role"], "content": m["content"]} for m in chats_data[current_user]]
 
                     completion = client.chat.completions.create(
-                        model=selected_model,
+                        model=FIXED_MODEL,  # Sabit model kullanılıyor
                         messages=formatted_msgs,
                         stream=False
                     )
 
                     elapsed = round(time.time() - start_time, 2)
                     reply = completion.choices[0].message.content
-                    full_reply = f"{reply}\n\n---\n⏱️ *Yanıt Süresi: {elapsed} saniye | Model: {selected_model}*"
+                    full_reply = f"{reply}\n\n---\n⏱️ *Süre: {elapsed}s | {FIXED_MODEL}*"
                     
-                    st.write(full_reply)
+                    st.markdown(full_reply)
                     
                     chats_data[current_user].append({"role": "assistant", "content": full_reply})
                     save_data(CHATS_FILE, chats_data)
-                    st.rerun()
 
                 except Exception as e:
                     st.error(f"API Hatası: {e}")
