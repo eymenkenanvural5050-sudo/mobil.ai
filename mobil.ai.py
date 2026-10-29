@@ -44,17 +44,24 @@ def save_data(filename, data):
 # Sayfa Yapılandırması
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# Modern, Şık ve Hatasız Koyu Yeşil Tasarım (CSS)
+# CSS ile Tüm Renkleri Tek Ton Yapma, Üst Barı ve Metinleri Beyaz Yapma
 st.markdown("""
     <style>
+    /* Üst Streamlit barını koyu yeşil yap */
+    header[data-testid="stHeader"] {
+        background-color: #142219 !important;
+    }
+    /* Ana arayüz arka planı */
     .stApp {
         background-color: #142219;
         color: #e8ede9;
     }
+    /* Sol menü */
     [data-testid="stSidebar"] {
-        background-color: #0d1711;
+        background-color: #142219;
         border-right: 1px solid #1f3527;
     }
+    /* Butonlar */
     .stButton>button {
         width: 100%;
         height: 3em;
@@ -64,27 +71,33 @@ st.markdown("""
         background-color: #1b2e23;
         color: #ffffff;
         border: 1px solid #2d4a38;
-        transition: all 0.3s ease;
     }
     .stButton>button:hover {
         background-color: #2d4a38;
         border-color: #d4af37;
         color: #d4af37;
     }
+    /* Sekmeler */
     .stTabs [data-baseweb="tab"] {
         font-size: 18px !important;
         font-weight: bold;
         padding: 10px 20px;
         color: #a3b8ad;
     }
+    /* Başlıklar */
     h1, h2, h3 {
         color: #d4af37 !important;
     }
-    .stTextInput input, .stTextArea textarea {
-        background-color: #1b2e23;
-        color: #ffffff;
-        border: 1px solid #2d4a38;
+    /* Sohbet ve metin giriş kutuları (Yazı beyaz) */
+    .stTextInput input, .stTextArea textarea, div[data-baseweb="input"] input {
+        background-color: #1b2e23 !important;
+        color: #ffffff !important;
+        border: 1px solid #2d4a38 !important;
         border-radius: 10px;
+    }
+    /* Sohbet alt yazma alanı metin rengi */
+    .stChatInput input {
+        color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -104,13 +117,12 @@ def get_groq_models():
     except Exception:
         return ["llama-3.3-70b-versatile", "llama3-8b-8192"]
 
-# SOL MENÜ (Kontrol Paneli)
+# SOL MENÜ (Kontrol Paneli ve Logo)
 with st.sidebar:
     if os.path.exists("logo.png"):
         st.image("logo.png", use_container_width=True)
     else:
-        st.markdown("### 🌰 EymenX Logo Bulunamadı")
-        st.caption("Lütfen logo.png dosyasını yükleyin.")
+        st.markdown("### 🌰 EymenX")
     
     st.divider()
     ai_persona = st.selectbox("AI Modu:", ["Genel Asistan", "Matematik Hocası", "Kodlama Rehberi", "Siber Güvenlik Uzmanı"])
@@ -128,6 +140,7 @@ with st.sidebar:
         if "70b" in model_name or "versatile" in model_name:
             default_index = idx
             break
+            
     selected_model = st.selectbox("Model Seçin:", available_models, index=default_index)
 
     st.divider()
