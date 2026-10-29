@@ -42,7 +42,7 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# TÜRK BAYRAĞI, EL YAZISI STİLİ VE KOYU YEŞİL TEMA CSS
+# KOYU YEŞİL TEMA VE EL YAZISI STİLİ CSS
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -51,54 +51,6 @@ st.markdown("""
         font-size: 28px; 
         color: #d4af37 !important; 
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
-    }
-    /* Dalgalanan CSS Türk Bayrağı */ 
-    .turkish-flag { 
-        position: relative; 
-        width: 55px; 
-        height: 36px; 
-        background-color: #e30a17; 
-        border-radius: 4px; 
-        box-shadow: 0 2px 8px rgba(0,0,0,0.4); 
-        display: inline-block; 
-        overflow: hidden; 
-        animation: wave 3s ease-in-out infinite alternate; 
-    }
-    .turkish-flag .moon { 
-        position: absolute; 
-        top: 6px; 
-        left: 10px; 
-        width: 20px; 
-        height: 20px; 
-        border-radius: 50%; 
-        box-shadow: 4px 0 0 0 #ffffff; 
-    }
-    .turkish-flag .star { 
-        position: absolute; 
-        top: 11px; 
-        left: 31px; 
-        display: block; 
-        width: 0; 
-        height: 0; 
-        border-right: 4px solid transparent; 
-        border-bottom: 3px solid #ffffff; 
-        border-left: 4px solid transparent; 
-        transform: rotate(35deg); 
-    } 
-    .turkish-flag .star:before { 
-        content: ""; 
-        position: absolute; 
-        top: -2px; 
-        left: -4px; 
-        border-right: 4px solid transparent; 
-        border-top: 3px solid #ffffff; 
-        border-left: 4px solid transparent; 
-        transform: rotate(-70deg); 
-    }
-    @keyframes wave { 
-        0% { transform: skewY(0deg) scale(1); } 
-        50% { transform: skewY(-2deg) scale(1.02); } 
-        100% { transform: skewY(1deg) scale(1); } 
     }
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
@@ -167,7 +119,6 @@ st.markdown("""
     /* Mobilde küçük ekranlar için yazı boyutu ayarı */ 
     @media (max-width: 768px) { 
         .cursive-text { font-size: 20px !important; } 
-        .turkish-flag { width: 45px; height: 30px; } 
     }
     </style>
 """, unsafe_allow_html=True)
@@ -205,16 +156,17 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# SAĞ ÜST KÖŞE: DALGALANAN BAYRAK VE EL YAZISI YAZI
-st.markdown("""
-    <div class="header-banner">
-        <span class="cursive-text">Cumhuriyet hürriyet demektir</span>
-        <div class="turkish-flag">
-            <div class="moon"></div>
-            <div class="star"></div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+# SAĞ ÜST KÖŞE: GERÇEKÇİ DALGALANAN BAYRAK GÖRSELİ VE EL YAZISI
+col_space, col_text, col_flag = st.columns([6, 3, 1.2])
+with col_text:
+    st.markdown('<div style="text-align: right; padding-top: 5px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
+with col_flag:
+    if os.path.exists("bayrak.gif"):
+        st.image("bayrak.gif", width=85)
+    elif os.path.exists("bayrak.png"):
+        st.image("bayrak.png", width=85)
+    else:
+        st.markdown("🇹🇷")
 
 st.title("EymenX AI Asistan & Bilişim Lab")
 st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
