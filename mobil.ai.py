@@ -42,7 +42,7 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# HARİCİ CSS DOSYASINI YÜKLEME
+# style.css DOSYASINI PROJEYE BAĞLAMA
 if os.path.exists("style.css"):
     with open("style.css", "r", encoding="utf-8") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)

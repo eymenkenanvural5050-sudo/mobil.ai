@@ -1,142 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
 
-/* Ana arayüz ve koyu yeşil tema */
+.cursive-text { 
+    font-family: 'Caveat', cursive; 
+    font-size: 28px; 
+    color: #d4af37 !important; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+}
+
 .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
     background-color: #142219 !important;
     color: #ffffff !important;
 }
 
-/* Sağ üst bayrak ve el yazısı yazı alanı tasarımı */
-.header-banner {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 12px;
-    padding: 5px 10px;
-    margin-bottom: -15px;
+/* Yan menü (Sidebar) içindeki logo - Orijinal tam boy */ 
+[data-testid="stSidebar"] img { 
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 100% !important;
+    max-width: 100% !important; 
+    border-radius: 12px; 
 }
 
-.cursive-text {
-    font-family: 'Caveat', cursive;
-    font-size: 28px;
-    color: #d4af37 !important;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+.stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div { 
+    background-color: #1b2e23 !important; 
+    color: #ffffff !important; 
+    border: 1px solid #2d4a38 !important; 
+    border-radius: 12px !important; 
 }
 
-/* Dalgalanan CSS Türk Bayrağı */
-.turkish-flag {
-    position: relative;
-    width: 55px;
-    height: 36px;
-    background-color: #e30a17;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    display: inline-block;
-    overflow: hidden;
-    animation: wave 3s ease-in-out infinite alternate;
+div[data-testid="stChatMessage"] { 
+    background-color: #1b2e23 !important; 
+    color: #ffffff !important; 
+    border: 1px solid #2d4a38 !important; 
+    border-radius: 14px !important; 
+    padding: 12px; 
+    margin-bottom: 10px; 
+} 
+
+div[data-testid="stChatMessage"] * { 
+    color: #ffffff !important; 
 }
 
-.turkish-flag .moon {
-    position: absolute;
-    top: 6px;
-    left: 10px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    box-shadow: 4px 0 0 0 #ffffff;
+p, span, label, div, li { 
+    color: #ffffff !important; 
 }
 
-.turkish-flag .star {
-    position: absolute;
-    top: 11px;
-    left: 31px;
-    display: block;
-    width: 0;
-    height: 0;
-    border-right: 4px solid transparent;
-    border-bottom: 3px solid #ffffff;
-    border-left: 4px solid transparent;
-    transform: rotate(35deg);
-}
-.turkish-flag .star:before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: -4px;
-    border-right: 4px solid transparent;
-    border-top: 3px solid #ffffff;
-    border-left: 4px solid transparent;
-    transform: rotate(-70deg);
+h1, h2, h3 { 
+    color: #d4af37 !important; 
 }
 
-@keyframes wave {
-    0% { transform: skewY(0deg) scale(1); }
-    50% { transform: skewY(-2deg) scale(1.02); }
-    100% { transform: skewY(1deg) scale(1); }
+.stButton>button { 
+    width: 100%; 
+    min-height: 3em; 
+    font-size: 15px !important; 
+    font-weight: 600; 
+    border-radius: 12px; 
+    background-color: #1b2e23; 
+    color: #ffffff !important; 
+    border: 1px solid #2d4a38; 
+} 
+
+.stButton>button:hover { 
+    background-color: #2d4a38; 
+    border-color: #d4af37; 
+    color: #d4af37 !important; 
 }
 
-/* Yan menü (Sidebar) içindeki logo */
-[data-testid="stSidebar"] img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 140px !important;
-    border-radius: 12px;
-}
-
-/* Giriş kutuları */
-.stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div {
-    background-color: #1b2e23 !important;
-    color: #ffffff !important;
-    border: 1px solid #2d4a38 !important;
-    border-radius: 12px !important;
-}
-
-/* Sohbet baloncukları */
-div[data-testid="stChatMessage"] {
-    background-color: #1b2e23 !important;
-    color: #ffffff !important;
-    border: 1px solid #2d4a38 !important;
-    border-radius: 14px !important;
-    padding: 12px;
-    margin-bottom: 10px;
-}
-div[data-testid="stChatMessage"] * {
-    color: #ffffff !important;
-}
-
-/* Metin renkleri */
-p, span, label, div, li {
-    color: #ffffff !important;
-}
-
-h1, h2, h3 {
-    color: #d4af37 !important;
-}
-
-/* Buton tasarımı */
-.stButton>button {
-    width: 100%;
-    min-height: 3em;
-    font-size: 15px !important;
-    font-weight: 600;
-    border-radius: 12px;
-    background-color: #1b2e23;
-    color: #ffffff !important;
-    border: 1px solid #2d4a38;
-}
-.stButton>button:hover {
-    background-color: #2d4a38;
-    border-color: #d4af37;
-    color: #d4af37 !important;
-}
-
-@media (max-width: 768px) {
-    .cursive-text {
-        font-size: 20px !important;
-    }
-    .turkish-flag {
-        width: 45px;
-        height: 30px;
-    }
+@media (max-width: 768px) { 
+    .cursive-text { font-size: 20px !important; } 
 }
