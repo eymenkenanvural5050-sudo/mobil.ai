@@ -2,7 +2,7 @@
 
 .cursive-text { 
     font-family: 'Caveat', cursive !important; 
-    font-size: 28px !important; 
+    font-size: 26px !important; 
     color: #d4af37 !important; 
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
 }
@@ -68,5 +68,5 @@ h1, h2, h3 {
 }
 
 @media (max-width: 768px) { 
-    .cursive-text { font-size: 20px !important; } 
+    .cursive-text { font-size: 18px !important; } 
 }

@@ -86,7 +86,7 @@ if os.path.exists("bayrak.mp4"):
 else:
     st.info("💡 Klasöre 'bayrak.mp4' adında video ekleyin.")
 
-# SAĞ ÜSTTE "EFENDİLER, YARIN CUMHURİYETİ İLAN EDECEĞİZ!" VE ATATÜRK İMZASI
+# SAĞ ÜSTTE SÖZ VE ATATÜRK İMZASI (imza.png)
 col_title, col_text = st.columns([5, 5])
 
 with col_title:
@@ -94,12 +94,13 @@ with col_title:
     st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
 
 with col_text:
-    st.markdown('''
-        <div style="text-align: right; padding-top: 5px;">
-            <span class="cursive-text">"Efendiler, yarın Cumhuriyet'i ilan edeceğiz!"</span><br>
-            <span style="font-family: 'Caveat', cursive; font-size: 22px; color: #d4af37 !important;">K. Atatürk</span>
-        </div>
-    ''', unsafe_allow_html=True)
+    st.markdown('<div style="text-align: right; padding-top: 5px;"><span class="cursive-text">"Efendiler, yarın Cumhuriyet\'i ilan edeceğiz!"</span></div>', unsafe_allow_html=True)
+    col_bosluk, col_imza = st.columns([3, 2])
+    with col_imza:
+        if os.path.exists("imza.png"):
+            st.image("imza.png", width=140)
+        else:
+            st.markdown('<div style="text-align: right;"><span style="font-family: \'Caveat\', cursive; font-size: 20px; color: #d4af37;">K. Atatürk</span></div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
