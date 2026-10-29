@@ -42,24 +42,17 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# KOYU YEŞİL TEMA, EL YAZISI VE LOGO BOYUT AYARI
+# KOYU YEŞİL TEMA VE TASARIM STİLLERİ
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
-    .cursive-text { 
-        font-family: 'Caveat', cursive; 
-        font-size: 28px; 
-        color: #d4af37 !important; 
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
-    }
-    
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
     }
     
-    /* Yan menü (Sidebar) içindeki logo - Orijinal büyük boyutu */ 
+    /* Yan menü (Sidebar) içindeki logo - Orijinal büyük boyut */ 
     [data-testid="stSidebar"] img { 
         display: block; 
         margin-left: auto; 
@@ -115,10 +108,6 @@ st.markdown("""
         border-color: #d4af37; 
         color: #d4af37 !important; 
     }
-    
-    @media (max-width: 768px) { 
-        .cursive-text { font-size: 20px !important; } 
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -155,15 +144,12 @@ with st.sidebar:
         save_data(CHATS_FILE, chats_data)
         st.rerun()
 
-# ÜST KISIM: BAŞLIK, EL YAZISI VE VİDEO OYNATICI
-col_title, col_text, col_video = st.columns([4.5, 3.5, 2])
+# ÜST KISIM: SOLDA BAŞLIK, SAĞDA ESKİ YAZININ YERİNE VİDEO OYNATICI
+col_title, col_video = st.columns([6, 4])
 
 with col_title:
     st.title("EymenX AI Asistan & Bilişim Lab")
     st.caption("Kişisel Yapay Zeka ve Geliştirme Platformu")
-
-with col_text:
-    st.markdown('<div style="text-align: right; padding-top: 15px;"><span class="cursive-text">Cumhuriyet hürriyet demektir</span></div>', unsafe_allow_html=True)
 
 with col_video:
     if os.path.exists("bayrak.mp4"):
