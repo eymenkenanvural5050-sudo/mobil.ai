@@ -46,13 +46,66 @@ st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
+    .cursive-text { 
+        font-family: 'Caveat', cursive; 
+        font-size: 28px; 
+        color: #d4af37 !important; 
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+    }
+    /* Dalgalanan CSS Türk Bayrağı */ 
+    .turkish-flag { 
+        position: relative; 
+        width: 55px; 
+        height: 36px; 
+        background-color: #e30a17; 
+        border-radius: 4px; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4); 
+        display: inline-block; 
+        overflow: hidden; 
+        animation: wave 3s ease-in-out infinite alternate; 
+    }
+    .turkish-flag .moon { 
+        position: absolute; 
+        top: 6px; 
+        left: 10px; 
+        width: 20px; 
+        height: 20px; 
+        border-radius: 50%; 
+        box-shadow: 4px 0 0 0 #ffffff; 
+    }
+    .turkish-flag .star { 
+        position: absolute; 
+        top: 11px; 
+        left: 31px; 
+        display: block; 
+        width: 0; 
+        height: 0; 
+        border-right: 4px solid transparent; 
+        border-bottom: 3px solid #ffffff; 
+        border-left: 4px solid transparent; 
+        transform: rotate(35deg); 
+    } 
+    .turkish-flag .star:before { 
+        content: ""; 
+        position: absolute; 
+        top: -2px; 
+        left: -4px; 
+        border-right: 4px solid transparent; 
+        border-top: 3px solid #ffffff; 
+        border-left: 4px solid transparent; 
+        transform: rotate(-70deg); 
+    }
+    @keyframes wave { 
+        0% { transform: skewY(0deg) scale(1); } 
+        50% { transform: skewY(-2deg) scale(1.02); } 
+        100% { transform: skewY(1deg) scale(1); } 
+    }
     /* Ana arayüz ve koyu yeşil tema */
     .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
         background-color: #142219 !important;
         color: #ffffff !important;
     }
-    
-    /* Sağ üst bayrak ve el yazısı yazı alanı tasarımı */
+    /* Sağ üst bayrak ve el yazısı alanı */
     .header-banner {
         display: flex;
         justify-content: flex-end;
@@ -61,131 +114,60 @@ st.markdown("""
         padding: 5px 10px;
         margin-bottom: -15px;
     }
-    
-    .cursive-text {
-        font-family: 'Caveat', cursive;
-        font-size: 28px;
-        color: #d4af37 !important;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    /* Yan menü (Sidebar) içindeki logo */ 
+    [data-testid="stSidebar"] img { 
+        display: block; 
+        margin-left: auto; 
+        margin-right: auto; 
+        max-width: 140px !important; 
+        border-radius: 12px; 
     }
-
-    /* Dalgalanan CSS Türk Bayrağı */
-    .turkish-flag {
-        position: relative;
-        width: 55px;
-        height: 36px;
-        background-color: #e30a17;
-        border-radius: 4px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        display: inline-block;
-        overflow: hidden;
-        animation: wave 3s ease-in-out infinite alternate;
+    /* Giriş kutuları */ 
+    .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div { 
+        background-color: #1b2e23 !important; 
+        color: #ffffff !important; 
+        border: 1px solid #2d4a38 !important; 
+        border-radius: 12px !important; 
     }
-    
-    .turkish-flag .moon {
-        position: absolute;
-        top: 6px;
-        left: 10px;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        box-shadow: 4px 0 0 0 #ffffff;
+    /* Sohbet baloncukları */ 
+    div[data-testid="stChatMessage"] { 
+        background-color: #1b2e23 !important; 
+        color: #ffffff !important; 
+        border: 1px solid #2d4a38 !important; 
+        border-radius: 14px !important; 
+        padding: 12px; 
+        margin-bottom: 10px; 
+    } 
+    div[data-testid="stChatMessage"] * { 
+        color: #ffffff !important; 
     }
-    
-    .turkish-flag .star {
-        position: absolute;
-        top: 11px;
-        left: 31px;
-        display: block;
-        width: 0;
-        height: 0;
-        border-right: 4px solid transparent;
-        border-bottom: 3px solid #ffffff;
-        border-left: 4px solid transparent;
-        transform: rotate(35deg);
+    /* Metin renkleri */ 
+    p, span, label, div, li { 
+        color: #ffffff !important; 
     }
-    .turkish-flag .star:before {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -4px;
-        border-right: 4px solid transparent;
-        border-top: 3px solid #ffffff;
-        border-left: 4px solid transparent;
-        transform: rotate(-70deg);
+    h1, h2, h3 { 
+        color: #d4af37 !important; 
     }
-
-    @keyframes wave {
-        0% { transform: skewY(0deg) scale(1); }
-        50% { transform: skewY(-2deg) scale(1.02); }
-        100% { transform: skewY(1deg) scale(1); }
+    /* Buton tasarımı */ 
+    .stButton>button { 
+        width: 100%; 
+        min-height: 3em; 
+        font-size: 15px !important; 
+        font-weight: 600; 
+        border-radius: 12px; 
+        background-color: #1b2e23; 
+        color: #ffffff !important; 
+        border: 1px solid #2d4a38; 
+    } 
+    .stButton>button:hover { 
+        background-color: #2d4a38; 
+        border-color: #d4af37; 
+        color: #d4af37 !important; 
     }
-    
-    /* Yan menü (Sidebar) içindeki logo */
-    [data-testid="stSidebar"] img {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 140px !important;
-        border-radius: 12px;
-    }
-
-    /* Giriş kutuları */
-    .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div {
-        background-color: #1b2e23 !important;
-        color: #ffffff !important;
-        border: 1px solid #2d4a38 !important;
-        border-radius: 12px !important;
-    }
-    
-    /* Sohbet baloncukları */
-    div[data-testid="stChatMessage"] {
-        background-color: #1b2e23 !important;
-        color: #ffffff !important;
-        border: 1px solid #2d4a38 !important;
-        border-radius: 14px !important;
-        padding: 12px;
-        margin-bottom: 10px;
-    }
-    div[data-testid="stChatMessage"] * {
-        color: #ffffff !important;
-    }
-    
-    /* Metin renkleri */
-    p, span, label, div, li {
-        color: #ffffff !important;
-    }
-    
-    h1, h2, h3 {
-        color: #d4af37 !important;
-    }
-    
-    /* Buton tasarımı */
-    .stButton>button {
-        width: 100%;
-        min-height: 3em;
-        font-size: 15px !important;
-        font-weight: 600;
-        border-radius: 12px;
-        background-color: #1b2e23;
-        color: #ffffff !important;
-        border: 1px solid #2d4a38;
-    }
-    .stButton>button:hover {
-        background-color: #2d4a38;
-        border-color: #d4af37;
-        color: #d4af37 !important;
-    }
-
-    /* Mobilde küçük ekranlar için yazı boyutu ayarı */
-    @media (max-width: 768px) {
-        .cursive-text {
-            font-size: 20px !important;
-        }
-        .turkish-flag {
-            width: 45px;
-            height: 30px;
-        }
+    /* Mobilde küçük ekranlar için yazı boyutu ayarı */ 
+    @media (max-width: 768px) { 
+        .cursive-text { font-size: 20px !important; } 
+        .turkish-flag { width: 45px; height: 30px; } 
     }
     </style>
 """, unsafe_allow_html=True)
@@ -196,7 +178,6 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
-# SABİT MODEL
 FIXED_MODEL = "openai/gpt-oss-120b"
 
 with st.sidebar:
@@ -243,7 +224,6 @@ tab_chat, tab_code, tab_quiz = st.tabs(["💬 Sohbet", "💻 Python", "🏆 Quiz
 
 current_user = "default_user"
 
-# TAB 1: SOHBET
 with tab_chat:
     chats_data = load_data(CHATS_FILE, "dict")
     if current_user not in chats_data:
@@ -304,7 +284,6 @@ with tab_chat:
                 except Exception as e:
                     st.error(f"API Hatası: {e}")
 
-# TAB 2: PYTHON PLAYGROUND
 with tab_code:
     st.subheader("💻 Canlı Python Kod Derleyicisi")
     default_code = 'print("Merhaba EymenX!")\nfor i in range(1, 4):\n    print(f"Bilişim Adım: {i}")'
@@ -321,7 +300,6 @@ with tab_code:
             sys.stdout = old_stdout
             st.error(f"❌ Hata: {err}")
 
-# TAB 3: QUIZ
 with tab_quiz:
     st.subheader("🏆 Günün 3 Bilişim Yarışması")
     
