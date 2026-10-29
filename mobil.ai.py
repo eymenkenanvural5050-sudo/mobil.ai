@@ -42,85 +42,10 @@ def save_data(filename, data):
 
 st.set_page_config(page_title="EymenX", page_icon="🌰", layout="wide")
 
-# CSS KODLARININ EKRANDA YAZI OLARAK GÖZÜKMesini ENGELLEYEN GÜVENLİ ETİKET
-st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
-    <style>
-    .cursive-text { 
-        font-family: 'Caveat', cursive; 
-        font-size: 28px; 
-        color: #d4af37 !important; 
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
-    }
-    
-    /* Ana arayüz ve koyu yeşil tema */
-    .stApp, [data-testid="stSidebar"], header[data-testid="stHeader"], .main {
-        background-color: #142219 !important;
-        color: #ffffff !important;
-    }
-    
-    /* Yan menü (Sidebar) içindeki logo - Orijinal büyük boyut */ 
-    [data-testid="stSidebar"] img { 
-        display: block; 
-        margin-left: auto; 
-        margin-right: auto; 
-        width: 100% !important;
-        max-width: 220px !important; 
-        border-radius: 12px; 
-    }
-    
-    /* Giriş kutuları */ 
-    .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div { 
-        background-color: #1b2e23 !important; 
-        color: #ffffff !important; 
-        border: 1px solid #2d4a38 !important; 
-        border-radius: 12px !important; 
-    }
-    
-    /* Sohbet baloncukları */ 
-    div[data-testid="stChatMessage"] { 
-        background-color: #1b2e23 !important; 
-        color: #ffffff !important; 
-        border: 1px solid #2d4a38 !important; 
-        border-radius: 14px !important; 
-        padding: 12px; 
-        margin-bottom: 10px; 
-    } 
-    div[data-testid="stChatMessage"] * { 
-        color: #ffffff !important; 
-    }
-    
-    /* Metin renkleri */ 
-    p, span, label, div, li { 
-        color: #ffffff !important; 
-    }
-    
-    h1, h2, h3 { 
-        color: #d4af37 !important; 
-    }
-    
-    /* Buton tasarımı */ 
-    .stButton>button { 
-        width: 100%; 
-        min-height: 3em; 
-        font-size: 15px !important; 
-        font-weight: 600; 
-        border-radius: 12px; 
-        background-color: #1b2e23; 
-        color: #ffffff !important; 
-        border: 1px solid #2d4a38; 
-    } 
-    .stButton>button:hover { 
-        background-color: #2d4a38; 
-        border-color: #d4af37; 
-        color: #d4af37 !important; 
-    }
-    
-    @media (max-width: 768px) { 
-        .cursive-text { font-size: 20px !important; } 
-    }
-    </style>
-""", unsafe_allow_html=True)
+# HARİCİ CSS DOSYASINI YÜKLEME
+if os.path.exists("style.css"):
+    with open("style.css", "r", encoding="utf-8") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 if not api_key:
     st.error("GROQ_API_KEY bulunamadı!")
@@ -161,7 +86,7 @@ if os.path.exists("bayrak.mp4"):
 else:
     st.info("💡 Klasöre 'bayrak.mp4' adında video ekleyin.")
 
-# SAĞ ÜST KÖŞEDE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI
+# SAĞ ÜSTTE "CUMHURİYET HÜRRİYET DEMEKTİR" YAZISI VE BAŞLIK
 col_title, col_text = st.columns([6, 4])
 
 with col_title:
