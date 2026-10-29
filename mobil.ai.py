@@ -121,6 +121,15 @@ st.markdown("""
         100% { transform: skewY(1deg) scale(1); }
     }
     
+    /* Yan menü (Sidebar) içindeki logo */
+    [data-testid="stSidebar"] img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 140px !important;
+        border-radius: 12px;
+    }
+
     /* Giriş kutuları */
     .stTextInput input, .stTextArea textarea, .stChatInput input, div[data-baseweb="select"] > div {
         background-color: #1b2e23 !important;
@@ -171,7 +180,11 @@ st.markdown("""
     /* Mobilde küçük ekranlar için yazı boyutu ayarı */
     @media (max-width: 768px) {
         .cursive-text {
-            font-size: 22px !important;
+            font-size: 20px !important;
+        }
+        .turkish-flag {
+            width: 45px;
+            height: 30px;
         }
     }
     </style>
