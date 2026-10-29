@@ -1,0 +1,263 @@
+import os
+import io
+import sys
+import time
+import json
+from datetime import datetime
+from dotenv import load_dotenv
+from io import BytesIO
+import streamlit as st
+from groq import Groq
+
+# reportlab kütüphanesinin güvenli içe aktarımı (PDF için)
+try:
+    from reportlab.lib.pagesizes import letter
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib import colors
+    REPORTLAB_AVAILABLE = True
+except ImportError:
+    REPORTLAB_AVAILABLE = False
+
+# .env veya Streamlit Secrets üzerinden API anahtarı okuma
+load_dotenv()
+api_key = None
+
+try:
+    if "GROQ_API_KEY" in st.secrets:
+        api_key = st.secrets["GROQ_API_KEY"]
+except Exception:
+    pass
+
+if not api_key:
+    api_key = os.getenv("GROQ_API_KEY")
+
+# Dosya yolları
+CHATS_FILE = "user_chats.json"
+
+# Yasaklı Kelime Filtresi
+BAD_WORDS = ["küfür1", "argo1", "yasak1"]
+
+def contains_bad_words(text):
+    text_lower = text.lower()
+    return any(word in text_lower for word in BAD_WORDS)
+
+def load_data(filename, default_type="list"):
+    if os.path.exists(filename):
+        with open(filename, "r", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+                if default_type == "dict" and isinstance(data, dict):
+                    return data
+                elif default_type == "list" and isinstance(data, list):
+                    return data
+            except:
+                pass
+    return {} if default_type == "dict" else []
+
+def save_data(filename, data):
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+st.set_page_config(page_title="AI Asistan & Lab", page_icon="🤖", layout="wide")
+
+# Dokunmatik ekran ve akıllı tahta stili
+st.markdown("""
+    <style>
+    .stButton>button {
+        width: 100%;
+        height: 3.2em;
+        font-size: 18px !important;
+        font-weight: bold;
+        border-radius: 12px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 20px !important;
+        font-weight: bold;
+        padding: 10px 20px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+if not api_key:
+    st.error("GROQ_API_KEY bulunamadı! Lütfen .env dosyanıza GROQ_API_KEY anahtarınızı ekleyin.")
+    st.stop()
+
+client = Groq(api_key=api_key)
+
+# Dinamik Model Çekme
+@st.cache_data(ttl=3600)
+def get_groq_models():
+    try:
+        models = client.models.list()
+        model_ids = [m.id for m in models.data if "whisper" not in m.id and "safetensors" not in m.id]
+        return sorted(model_ids)
+    except Exception:
+        return ["llama3-8b-8192", "llama3-70b-8192"]
+
+# PDF Üretimi
+def generate_pdf(messages):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = [Paragraph("Eymen AI Asistan - Sohbet Raporu", styles['Heading1']), Spacer(1, 12)]
+    for msg in messages:
+        label = "Kullanıcı:" if msg["role"] == "user" else "Yapay Zeka:"
+        story.append(Paragraph(f"<b>{label}</b> {msg['content']}", styles['Normal']))
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
+
+# SOL MENÜ
+with st.sidebar:
+    st.title("⚙️ Kontrol Paneli")
+    
+    st.divider()
+    ai_persona = st.selectbox("AI Modu:", ["Genel Asistan", "Matematik Hocası", "Kodlama Rehberi", "Siber Güvenlik Uzmanı"])
+    persona_prompts = {
+        "Genel Asistan": "Sen yardımcı bir kişisel yapay zeka asistanısın. Türkçe, net yanıtlar ver.",
+        "Matematik Hocası": "Sen sabırlı bir matematik öğretmenisin. Adım adım anlat.",
+        "Kodlama Rehberi": "Sen bir Python öğretmenisin. Kod örnekleri ver.",
+        "Siber Güvenlik Uzmanı": "Sen siber güvenlik uzmanısın. Güvenlik kurallarını öğret."
+    }
+
+    st.divider()
+    available_models = get_groq_models()
+    default_index = 0
+    for idx, model_name in enumerate(available_models):
+        if "8b" in model_name or "70b" in model_name:
+            default_index = idx
+            break
+    selected_model = st.selectbox("Model Seçin:", available_models, index=default_index)
+
+    st.divider()
+    if st.button("🗑️ Sohbetimi Temizle"):
+        chats_data = load_data(CHATS_FILE, "dict")
+        chats_data["default_user"] = []
+        save_data(CHATS_FILE, chats_data)
+        st.rerun()
+
+# ANA SAYFA
+st.title("🤖 AI Asistan & Bilişim Lab")
+
+tab_chat, tab_code, tab_quiz = st.tabs(["💬 Yapay Zeka Sohbet", "💻 Python Kodu Çalıştır", "🏆 Günün Bilişim Soruları (3 Soru)"])
+
+current_user = "default_user"
+
+# TAB 1: SOHBET
+with tab_chat:
+    chats_data = load_data(CHATS_FILE, "dict")
+    if current_user not in chats_data:
+        chats_data[current_user] = []
+
+    for msg in chats_data[current_user]:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+
+    st.write("⚡ **Hızlı Sorular:**")
+    col1, col2, col3 = st.columns(3)
+    user_prompt = None
+
+    if col1.button("🐍 Python Nedir?"):
+        user_prompt = "Python programlama dili nedir, nerelerde kullanılır?"
+    if col2.button("🤖 Algoritma Örneği"):
+        user_prompt = "Bana günlük hayattan basit ve eğlenceli bir algoritma örneği ver."
+    if col3.button("🔐 Siber Güvenlik İpucu"):
+        user_prompt = "Güçlü şifre oluşturmak için 3 önemli ipucu ver."
+
+    chat_input = st.chat_input("Mesajınızı yazın...")
+    if chat_input:
+        user_prompt = chat_input
+
+    if user_prompt:
+        if contains_bad_words(user_prompt):
+            st.error("⚠️ Okul güvenlik kuralları gereği mesaj engellendi!")
+        else:
+            chats_data[current_user].append({"role": "user", "content": user_prompt})
+            save_data(CHATS_FILE, chats_data)
+            
+            with st.chat_message("user"):
+                st.write(user_prompt)
+
+            with st.chat_message("assistant"):
+                with st.spinner("Düşünüyor..."):
+                    try:
+                        start_time = time.time()
+                        sys_prompt = {"role": "system", "content": persona_prompts[ai_persona]}
+                        formatted_msgs = [sys_prompt] + [{"role": m["role"], "content": m["content"]} for m in chats_data[current_user]]
+
+                        completion = client.chat.completions.create(
+                            model=selected_model,
+                            messages=formatted_msgs,
+                            stream=False
+                        )
+
+                        elapsed = round(time.time() - start_time, 2)
+                        reply = completion.choices[0].message.content
+                        full_reply = f"{reply}\n\n---\n⏱️ *Yanıt Süresi: {elapsed} saniye | Model: {selected_model}*"
+                        
+                        st.write(full_reply)
+                        
+                        chats_data[current_user].append({"role": "assistant", "content": full_reply})
+                        save_data(CHATS_FILE, chats_data)
+                        st.rerun()
+
+                    except Exception as e:
+                        st.error(f"API Hatası: {e}")
+
+# TAB 2: PYTHON PLAYGROUND
+with tab_code:
+    st.subheader("💻 Canlı Python Kod Derleyicisi")
+    default_code = 'print("Merhaba Akıllı Tahta!")\nfor i in range(1, 4):\n    print(f"Bilişim Dersi Adım: {i}")'
+    user_code = st.text_area("Python Kodunuz:", value=default_code, height=180)
+    if st.button("▶️ Kodu Çalıştır"):
+        old_stdout = sys.stdout
+        redirected_output = sys.stdout = io.StringIO()
+        try:
+            exec(user_code)
+            sys.stdout = old_stdout
+            st.success("✅ Kod Başarıyla Çalıştı!")
+            st.code(redirected_output.getvalue(), language="python")
+        except Exception as err:
+            sys.stdout = old_stdout
+            st.error(f"❌ Hata: {err}")
+
+# TAB 3: QUIZ (3 SORU)
+with tab_quiz:
+    st.subheader("🏆 Günün 3 Bilişim Yarışması")
+    st.write("Soruları cevaplayın, doğru bildiğinizde konfeti patlasın ve ses çalsın!")
+    
+    def trigger_success():
+        st.balloons()
+        st.markdown('<audio autoplay><source src="https://actions.google.com/sounds/v1/cartoon/success_bell.ogg" type="audio/ogg"></audio>', unsafe_allow_html=True)
+
+    st.markdown("### 1️⃣ Soru: Python'da ekrana yazı yazdırma komutu hangisidir?")
+    q1 = st.radio("Seçiminizi yapın (Soru 1):", ["input()", "print()", "write()", "echo()"], key="q1_k")
+    if st.button("1. Soruyu Kontrol Et"):
+        if q1 == "print()":
+            st.success("🎉 Harika! 1. Soru Doğru!")
+            trigger_success()
+        else:
+            st.error("❌ Yanlış! Tekrar deneyin.")
+
+    st.divider()
+
+    st.markdown("### 2️⃣ Soru: Bilgisayarda mantıksal işlem yapan ve 'beyin' olarak bilinen donanım nedir?")
+    q2 = st.radio("Seçiminizi yapın (Soru 2):", ["RAM Bellek", "Sabit Disk (HDD)", "İşlemci (CPU)", "Ekran Kartı"], key="q2_k")
+    if st.button("2. Soruyu Kontrol Et"):
+        if q2 == "İşlemci (CPU)":
+            st.success("🎉 Tebrikler! 2. Soru Doğru!")
+            trigger_success()
+        else:
+            st.error("❌ Yanlış! İpucu: Merkezi işlem birimidir.")
+
+    st.divider()
+
+    st.markdown("### 3️⃣ Soru: Aşağıdakilerden hangisi güçlü ve güvenli bir şifrede mutlaka bulunmalıdır?")
+    q3 = st.radio("Seçiminizi yapın (Soru 3):", ["Sadece doğum tarihiniz", "Büyük harf, küçük harf, rakam ve özel karakter", "Adınız ve soyadınız", "123456 sayısı"], key="q3_k")
+    if st.button("3. Soruyu Kontrol Et"):
+        if q3 == "Büyük harf, küçük harf, rakam ve özel karakter":
+            st.success("🏆 Muhteşem! 3 Soru da Tamam! Tam Puan Kazandın!")
+            trigger_success()
+        else:
+            st.error("❌ Yanlış! Güvenlik kurallarını gözden geçir.")
